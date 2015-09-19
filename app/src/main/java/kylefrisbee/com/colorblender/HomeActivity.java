@@ -2,10 +2,13 @@ package kylefrisbee.com.colorblender;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 
@@ -24,6 +27,20 @@ public class HomeActivity extends AppCompatActivity {
         mColor1 = (Button) findViewById(R.id.color1_button);
         mColor2 = (Button) findViewById(R.id.color2_button);
         mSlider = (SeekBar) findViewById(R.id.seekBar);
+
+        addListeners();
+    }
+
+    private void addListeners() {
+        mColor1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_RUN);
+                i.setComponent(new ComponentName("com.kylefrisbie.colorpicker.app", "MainActivity.java"));
+                i.putExtra("Widget", "Button1");
+                startActivityForResult(i,RESULT_OK);
+            }
+        });
     }
 
     @Override
