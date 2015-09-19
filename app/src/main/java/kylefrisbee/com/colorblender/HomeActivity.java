@@ -14,6 +14,9 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
+/**
+ * The main activity that will be used. It contains the widgets, and will call a fragment when settings is selected from the menu
+ */
 public class HomeActivity extends AppCompatActivity {
     private ActionBar mActionBar;
     private Button mColor1;
@@ -78,7 +81,6 @@ public class HomeActivity extends AppCompatActivity {
         Intent i = new Intent(Intent.ACTION_RUN);
         i.setComponent(new ComponentName("com.kylefrisbie.colorpicker.app", "MainActivity.java"));
         startActivityForResult(i, RESULT_OK);
-
     }
 
     @Override
