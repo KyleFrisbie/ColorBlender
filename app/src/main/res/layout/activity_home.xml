@@ -9,7 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/MainLayout"
-        android:layout_above="@+id/seekBar"></RelativeLayout>
+        android:layout_above="@+id/seekBar"
+        android:background="#005bff">
+    </RelativeLayout>
 
     <Button
         android:layout_width="wrap_content"
@@ -39,5 +41,5 @@
         android:secondaryProgress="0"
         android:layout_centerHorizontal="true"
         android:indeterminate="false"
-        android:layout_above="@+id/color1_button" />/>
+        android:layout_above="@+id/color1_button" />
 </RelativeLayout>
