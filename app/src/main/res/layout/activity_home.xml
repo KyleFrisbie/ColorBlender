@@ -8,13 +8,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/button"></RelativeLayout>
+        android:id="@+id/MainLayout"
+        android:layout_above="@+id/seekBar"></RelativeLayout>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Color 1"
-        android:id="@+id/button"
+        android:id="@+id/color1_button"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -23,8 +24,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Color 2"
-        android:id="@+id/button2"
+        android:id="@+id/color2_button"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:max="100"
+        android:progress="50"
+        android:secondaryProgress="0"
+        android:layout_centerHorizontal="true"
+        android:indeterminate="false"
+        android:layout_above="@+id/color1_button" />/>
 </RelativeLayout>
