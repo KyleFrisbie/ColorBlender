@@ -67,10 +67,12 @@ public class SettingsFragment extends Fragment {
     }
 
     private void getColorFromPicker(String component) {
-        getArguments().putString("COMPONENT",component);
-        getFragmentManager().popBackStack();
-        Intent i = new Intent(Intent.ACTION_RUN);
-        i.setComponent(new ComponentName("com.kylefrisbie.colorpicker.app", "MainActivity.java"));
-        getActivity().startActivityForResult(i, Activity.RESULT_OK);
+        if(getArguments() != null) {
+            getArguments().putString("COMPONENT", component);
+            getFragmentManager().popBackStack();
+            Intent i = new Intent(Intent.ACTION_RUN);
+            i.setComponent(new ComponentName("com.kylefrisbie.colorpicker.app", "MainActivity.java"));
+            getActivity().startActivityForResult(i, Activity.RESULT_OK);
+        }
     }
 }

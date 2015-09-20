@@ -80,7 +80,8 @@ public class HomeActivity extends AppCompatActivity {
     private void getColor(String component) {
         mBundle.putString("COMPONENT", component);
         Intent i = getPackageManager().getLaunchIntentForPackage("com.kylefrisbie.colorpicker.app");
-        startActivityForResult(i, RESULT_OK);
+        i.setFlags(0);
+        startActivityForResult(i, 0);
     }
 
     @Override
@@ -112,12 +113,13 @@ public class HomeActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == RESULT_OK) {
+        if(requestCode == 0) {
             if (data != null) {
-                mRedValue = data.getIntExtra("R", -1);
-                mGreenValue = data.getIntExtra("G", -1);
-                mBlueValue = data.getIntExtra("B", -1);
+                mRedValue = data.getIntExtra("Red", -1);
+                mGreenValue = data.getIntExtra("Green", -1);
+                mBlueValue = data.getIntExtra("Blue", -1);
                 changeColor(mBundle.getString("COMPONENT", ""));
+                blendColors(50);
             }
         }
     }
@@ -154,4 +156,8 @@ public class HomeActivity extends AppCompatActivity {
         mSquareColor.setBackgroundColor(Color.rgb((int) r, (int) g, (int) b));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }
