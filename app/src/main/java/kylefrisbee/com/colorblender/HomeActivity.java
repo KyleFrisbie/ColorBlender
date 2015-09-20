@@ -41,7 +41,7 @@ public class HomeActivity extends AppCompatActivity {
         mSquareColor = (RelativeLayout) findViewById(R.id.MainLayout);
 
         addListeners();
-        mBundle = savedInstanceState;
+        mBundle = new Bundle();
         blendColors(50);
     }
 
