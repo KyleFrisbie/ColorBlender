@@ -2,12 +2,11 @@ package kylefrisbee.com.colorblender;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -80,8 +79,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void getColor(String component) {
         mBundle.putString("COMPONENT", component);
-        Intent i = new Intent(Intent.ACTION_RUN);
-        i.setComponent(new ComponentName("com.kylefrisbie.colorpicker.app", "MainActivity.java"));
+        Intent i = getPackageManager().getLaunchIntentForPackage("com.kylefrisbie.colorpicker.app");
         startActivityForResult(i, RESULT_OK);
     }
 
