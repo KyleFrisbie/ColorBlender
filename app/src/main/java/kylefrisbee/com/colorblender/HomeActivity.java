@@ -100,10 +100,10 @@ public class HomeActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.replace(R.id.MainLayout, new SettingsFragment());
-            ft.commit();
-            return true;
+//            FragmentTransaction ft = getFragmentManager().beginTransaction();
+//            ft.replace(R.id.MainLayout, new SettingsFragment());
+//            ft.commit();
+//            return true;
         }
 
         return super.onOptionsItemSelected(item);
