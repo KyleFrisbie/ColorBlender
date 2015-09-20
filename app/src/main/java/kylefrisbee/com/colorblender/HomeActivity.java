@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -41,6 +42,7 @@ public class HomeActivity extends AppCompatActivity {
 
         addListeners();
         mBundle = savedInstanceState;
+        blendColors(50);
     }
 
     private void addListeners() {
@@ -141,14 +143,17 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private int blendColors(float ratio) {
-        int color1 = mColor1.getSolidColor();
-        int color2 = mColor2.getSolidColor();
-        final float inverseRation = 1f - ratio;
+    private void blendColors(float ratio) {
+        ratio = ratio/100;
+        ColorDrawable buttonColor = (ColorDrawable) mColor1.getBackground();
+        int color2 = buttonColor.getColor();
+        ColorDrawable buttonColor2 = (ColorDrawable) mColor2.getBackground();
+        int color1 = buttonColor2.getColor();
+        final float inverseRation = 1 - ratio;
         float r = (Color.red(color1) * ratio) + (Color.red(color2) * inverseRation);
         float g = (Color.green(color1) * ratio) + (Color.green(color2) * inverseRation);
         float b = (Color.blue(color1) * ratio) + (Color.blue(color2) * inverseRation);
-        return Color.rgb((int) r, (int) g, (int) b);
+        mSquareColor.setBackgroundColor(Color.rgb((int) r, (int) g, (int) b));
     }
 
 }
