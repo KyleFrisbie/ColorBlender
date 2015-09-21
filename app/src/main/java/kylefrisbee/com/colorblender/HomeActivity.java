@@ -1,10 +1,14 @@
 package kylefrisbee.com.colorblender;
 
 import android.app.ActionBar;
-import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -28,6 +32,38 @@ public class HomeActivity extends AppCompatActivity {
     private Bundle mBundle;
     private RelativeLayout mSquareColor;
 
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
+    private float[] mValuesAcceleration;
+    private float[] mRotationMatrix;
+    private final SensorEventListener M_SENSOR_LISTNER = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            int progress;
+            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                System.arraycopy(event.values, 0, mValuesAcceleration, 0, 3);
+                if (event.values[0] < 0) {
+                    while ((event.values[0] < 0)) {
+                        progress = mSlider.getProgress();
+                        mSlider.setProgress(progress--);
+                        blendColors(progress);
+                    }
+                } else if (event.values[0] > 0) {
+                    while ((event.values[0] > 0)) {
+                        progress = mSlider.getProgress();
+                        mSlider.setProgress(progress++);
+                        blendColors(progress);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +74,11 @@ public class HomeActivity extends AppCompatActivity {
         mColor2 = (Button) findViewById(R.id.color2_button);
         mSlider = (SeekBar) findViewById(R.id.seekBar);
         mSquareColor = (RelativeLayout) findViewById(R.id.MainLayout);
+
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        mValuesAcceleration = new float[3];
+        mRotationMatrix = new float[9];
 
         addListeners();
         mBundle = new Bundle();
@@ -75,7 +116,12 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+
+        mSensorManager.registerListener(M_SENSOR_LISTNER, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+
     }
+
+
 
     private void getColor(String component) {
         mBundle.putString("COMPONENT", component);
