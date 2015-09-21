@@ -26,6 +26,7 @@ public class HomeActivity extends AppCompatActivity {
     private Button mColor1;
     private Button mColor2;
     private SeekBar mSlider;
+    private int mSliderPosition;
     private int mRedValue;
     private int mGreenValue;
     private int mBlueValue;
@@ -42,14 +43,16 @@ public class HomeActivity extends AppCompatActivity {
             int progress;
             if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
                 System.arraycopy(event.values, 0, mValuesAcceleration, 0, 3);
-                if (event.values[0] < -.5) {
+                if (event.values[0] < -.5 &&
+                        mSlider.getProgress() < 100) {
                         progress = mSlider.getProgress();
-                        progress = progress + 1;
+                        progress = progress + 3;
                         mSlider.setProgress(progress);
                         blendColors(progress);
-                } else if (event.values[0] > .5) {
+                } else if (event.values[0] > .5 &&
+                        mSlider.getProgress() > 0) {
                         progress = mSlider.getProgress();
-                        progress = progress - 1;
+                        progress = progress - 3;
                         mSlider.setProgress(progress);
                         blendColors(progress);
                 }
@@ -70,6 +73,7 @@ public class HomeActivity extends AppCompatActivity {
         mActionBar = getActionBar();
         mColor1 = (Button) findViewById(R.id.color1_button);
         mColor2 = (Button) findViewById(R.id.color2_button);
+        mSliderPosition = 50;
         mSlider = (SeekBar) findViewById(R.id.seekBar);
         mSquareColor = (RelativeLayout) findViewById(R.id.MainLayout);
 
@@ -82,7 +86,7 @@ public class HomeActivity extends AppCompatActivity {
 
         addListeners();
         mBundle = new Bundle();
-        blendColors(50);
+        blendColors(mSliderPosition);
     }
 
     private void addListeners() {
@@ -103,7 +107,8 @@ public class HomeActivity extends AppCompatActivity {
         mSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                blendColors(progress);
+                mSliderPosition = progress;
+                blendColors(mSliderPosition);
             }
 
             @Override
@@ -163,7 +168,7 @@ public class HomeActivity extends AppCompatActivity {
                 mGreenValue = data.getIntExtra("Green", -1);
                 mBlueValue = data.getIntExtra("Blue", -1);
                 changeColor(mBundle.getString("COMPONENT", ""));
-                blendColors(50);
+                blendColors(mSliderPosition);
             }
         }
     }
