@@ -36,24 +36,22 @@ public class HomeActivity extends AppCompatActivity {
     private Sensor mSensor;
     private float[] mValuesAcceleration;
     private float[] mRotationMatrix;
-    private final SensorEventListener M_SENSOR_LISTNER = new SensorEventListener() {
+    private final SensorEventListener M_SENSOR_LISTENER = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
             int progress;
             if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
                 System.arraycopy(event.values, 0, mValuesAcceleration, 0, 3);
-                if (event.values[0] < 0) {
-                    while ((event.values[0] < 0)) {
+                if (event.values[0] < -.5) {
                         progress = mSlider.getProgress();
-                        mSlider.setProgress(progress--);
+                        progress = progress + 1;
+                        mSlider.setProgress(progress);
                         blendColors(progress);
-                    }
-                } else if (event.values[0] > 0) {
-                    while ((event.values[0] > 0)) {
+                } else if (event.values[0] > .5) {
                         progress = mSlider.getProgress();
-                        mSlider.setProgress(progress++);
+                        progress = progress - 1;
+                        mSlider.setProgress(progress);
                         blendColors(progress);
-                    }
                 }
             }
         }
@@ -79,6 +77,8 @@ public class HomeActivity extends AppCompatActivity {
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         mValuesAcceleration = new float[3];
         mRotationMatrix = new float[9];
+
+        mSensorManager.registerListener(M_SENSOR_LISTENER, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 
         addListeners();
         mBundle = new Bundle();
@@ -116,8 +116,6 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
-
-        mSensorManager.registerListener(M_SENSOR_LISTNER, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 
     }
 
