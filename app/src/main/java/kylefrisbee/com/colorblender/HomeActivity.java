@@ -19,56 +19,40 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
 /**
- * The main activity that will be used. It contains the widgets, and will call a fragment when settings is selected from the menu
+ * The main activity that will be used. It contains the widgets, and will call a
+ * fragment when settings is selected from the menu
  */
 public class HomeActivity extends AppCompatActivity {
     private ActionBar mActionBar;
+
+    // buttons leading to color picker app for color selection
     private Button mColor1;
     private Button mColor2;
+
+    // seek-bar allowing user to blend color selections
     private SeekBar mSlider;
     private int mSliderPosition;
+    
+    // rgb values returned from color picker app
     private int mRedValue;
     private int mGreenValue;
     private int mBlueValue;
     private Bundle mBundle;
     private RelativeLayout mSquareColor;
 
+    // sensor to detect left/right phone tilt (which can adjust seek-bar)
     private SensorManager mSensorManager;
-    private Sensor mSensor;
     private float[] mValuesAcceleration;
-    private float[] mRotationMatrix;
-    private final SensorEventListener M_SENSOR_LISTENER = new SensorEventListener() {
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            int progress;
-            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                System.arraycopy(event.values, 0, mValuesAcceleration, 0, 3);
-                if (event.values[0] < -.5 &&
-                        mSlider.getProgress() < 100) {
-                        progress = mSlider.getProgress();
-                        progress = progress + 3;
-                        mSlider.setProgress(progress);
-                        blendColors(progress);
-                } else if (event.values[0] > .5 &&
-                        mSlider.getProgress() > 0) {
-                        progress = mSlider.getProgress();
-                        progress = progress - 3;
-                        mSlider.setProgress(progress);
-                        blendColors(progress);
-                }
-            }
-        }
 
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-        }
-    };
+    // listener to detect tilt and update color-blended value
+    private SensorEventListener m_sensor_listener;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // initialize variables
         setContentView(R.layout.activity_home);
         mActionBar = getActionBar();
         mColor1 = (Button) findViewById(R.id.color1_button);
@@ -76,13 +60,12 @@ public class HomeActivity extends AppCompatActivity {
         mSliderPosition = 50;
         mSlider = (SeekBar) findViewById(R.id.seekBar);
         mSquareColor = (RelativeLayout) findViewById(R.id.MainLayout);
-
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        mSensorManager =
+                (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mValuesAcceleration = new float[3];
-        mRotationMatrix = new float[9];
-
-        mSensorManager.registerListener(M_SENSOR_LISTENER, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(m_sensor_listener,
+                mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_NORMAL);
 
         addListeners();
         mBundle = new Bundle();
@@ -122,13 +105,50 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        m_sensor_listener = new SensorEventListener() {
+                    @Override
+                    public void onSensorChanged(SensorEvent event) {
+                        int progress;
+                        if (event.sensor.getType() ==
+                                Sensor.TYPE_ACCELEROMETER) {
+                            System.arraycopy(event.values, 0,
+                                    mValuesAcceleration, 0, 3);
+
+                            // if tilted to the right, increase seek bar value
+                            // else if tilted to the left, decrease seek bar
+                            // value
+                            if (event.values[0] < -.5 &&
+                                    mSlider.getProgress() < 97) {
+                                progress = mSlider.getProgress();
+                                progress = progress + 3;
+                                mSlider.setProgress(progress);
+                                blendColors(progress);
+                            } else if (event.values[0] > .5 &&
+                                    mSlider.getProgress() > 3) {
+                                progress = mSlider.getProgress();
+                                progress = progress - 3;
+                                mSlider.setProgress(progress);
+                                blendColors(progress);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+                    }
+                };
+
     }
 
 
-
+    /** Make an intent to color-picker app to get a color */
     private void getColor(String component) {
         mBundle.putString("COMPONENT", component);
-        Intent i = getPackageManager().getLaunchIntentForPackage("com.kylefrisbie.colorpicker.app");
+
+        // Explicit intent to color-picker application
+        Intent i = getPackageManager().
+                getLaunchIntentForPackage("com.kylefrisbie.colorpicker.app");
         i.setFlags(0);
         startActivityForResult(i, 0);
     }
@@ -159,7 +179,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode,
+                                    int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 0) {
@@ -174,24 +195,29 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
-     * Changed the color of the component the user requested based off the color they chose with the color picker
+     * Changed the color of the component the user requested based off the
+     * color they chose with the color picker
      * @param component - the widget to change
      */
     private void changeColor(String component) {
         switch(component){
             case SettingsFragment.COLOR_1_BUTTON:
-                mColor1.setBackgroundColor(Color.rgb(mRedValue, mGreenValue, mBlueValue));
+                mColor1.setBackgroundColor(
+                        Color.rgb(mRedValue, mGreenValue, mBlueValue));
                 break;
             case SettingsFragment.COLOR_2_BUTTON:
-                mColor2.setBackgroundColor(Color.rgb(mRedValue, mGreenValue, mBlueValue));
+                mColor2.setBackgroundColor(
+                        Color.rgb(mRedValue, mGreenValue, mBlueValue));
                 break;
             case SettingsFragment.SLIDER:
-                mSlider.setBackgroundColor(Color.rgb(mRedValue, mGreenValue, mBlueValue));
+                mSlider.setBackgroundColor(
+                        Color.rgb(mRedValue, mGreenValue, mBlueValue));
                 break;
 
         }
     }
 
+    /** Blend color1 and color2 based on seek-bar position */
     private void blendColors(float ratio) {
         ratio = ratio/100;
         ColorDrawable buttonColor = (ColorDrawable) mColor1.getBackground();
@@ -199,9 +225,12 @@ public class HomeActivity extends AppCompatActivity {
         ColorDrawable buttonColor2 = (ColorDrawable) mColor2.getBackground();
         int color1 = buttonColor2.getColor();
         final float inverseRation = 1 - ratio;
-        float r = (Color.red(color1) * ratio) + (Color.red(color2) * inverseRation);
-        float g = (Color.green(color1) * ratio) + (Color.green(color2) * inverseRation);
-        float b = (Color.blue(color1) * ratio) + (Color.blue(color2) * inverseRation);
+        float r = (Color.red(color1) * ratio) +
+                (Color.red(color2) * inverseRation);
+        float g = (Color.green(color1) * ratio) +
+                (Color.green(color2) * inverseRation);
+        float b = (Color.blue(color1) * ratio) +
+                (Color.blue(color2) * inverseRation);
         mSquareColor.setBackgroundColor(Color.rgb((int) r, (int) g, (int) b));
     }
 
